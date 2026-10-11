@@ -12,37 +12,33 @@ spec:
     metadata:
       labels:
         app: springboot
-  spec:
-    containers:
-      - name: springboot
-        image: pkatjs/worker-management-system:latest
-        ports:
-          - containerPort: 8080
-        env:
-          - name: SPRING_DATASOURCE_URL
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: SPRING_DATASOURCE_URL
-
-          - name: SPRING_DATASOURCE_USERNAME
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: SPRING_DATASOURCE_USERNAME
-
-          - name: SPRING_DATASOURCE_PASSWORD
-            valueFrom:
-              secret:
-                name: app-secret
-                key: SPRING_DATASOURCE_PASSWORD
-          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-            valueFrom:
-              configMapKeyRef:
-                name: app-config
-                key: SPRING_JPA_HIBERNATE_DDL_AUTO
-
-
+    spec:
+      containers:
+        - name: springboot
+          image: pkatjs/worker-management-system:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
 ---
 apiVersion: v1
 kind: Service
@@ -53,6 +49,7 @@ spec:
   selector:
     app: springboot
   ports:
+    - protocol: TCP
       port: 80
       targetPort: 8080
-type: LoadBalancer
+  type: LoadBalancer

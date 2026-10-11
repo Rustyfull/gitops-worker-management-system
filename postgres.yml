@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: deployment
+kind: Deployment
 metadata:
   name: postgres
   namespace: worker-app
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:latest
+          image: postgres:16
           env:
             - name: POSTGRES_DB
               valueFrom:
@@ -34,6 +34,7 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: POSTGRES_PASSWORD
+
           ports:
             - containerPort: 5432
 
